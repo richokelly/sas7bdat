@@ -17,7 +17,7 @@ A high-performance, memory-efficient .NET library for reading SAS7BDAT files wit
 ## Installation
 
 ```bash
-dotnet add package Sas7Bdat.Core
+dotnet add package Sas7Bdat
 ```
 
 ## Quick Start
