@@ -25,17 +25,17 @@ internal static class FieldSerializers
         SecsMax1960 = (max - Epoch1960).TotalSeconds;
     }
 
-    public static ColumnType InferKind(ColumnType storage, string? format, int length)
+    public static ColumnType InferKind(StorageType storage, string? format, int length)
     {
-        if (storage == ColumnType.String) return ColumnType.String;
-        if (storage != ColumnType.Number) return ColumnType.Unknown;
+        if (storage == StorageType.String) return ColumnType.String;
+        if (storage != StorageType.Number) return ColumnType.Unknown;
 
         var normalisedFormat = NormaliseFormat(format);
-        if (normalisedFormat.Length == 0) return ColumnType.Integer;
+        if (normalisedFormat.Length == 0) return ColumnType.Number;
 
-        if (length == 0) return ColumnType.Integer;
-        if (length == 1) return ColumnType.Integer;
-        if (length == 2) return ColumnType.Integer;
+        if (length == 0) return ColumnType.Number;
+        if (length == 1) return ColumnType.Number;
+        if (length == 2) return ColumnType.Number;
 
         // ISO 8601 families (B8601 / E8601 / IS8601)
         // *DT, *DZ → datetime (seconds)
@@ -272,7 +272,7 @@ internal static class FieldSerializers
 
             return startIndex >= endIndex
                 ? string.Empty
-                : encoding.GetString(data.Slice(startIndex, endIndex - startIndex)).Trim();
+                : encoding.GetString(data[startIndex.. (endIndex - startIndex)]).Trim();
         }
     }
 

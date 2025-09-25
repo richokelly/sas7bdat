@@ -31,9 +31,15 @@
         Unknown = 0,
         String = 1,
         Number = 2,
-        Integer = 3,
-        DateTime = 4,
-        Date = 5,
-        Time = 6
+        DateTime = 3,
+        Date = 4,
+        Time = 5
+    }
+
+    public enum StorageType : byte
+    {
+        Unknown = 0,
+        String = 1,
+        Number = 2
     }
 }

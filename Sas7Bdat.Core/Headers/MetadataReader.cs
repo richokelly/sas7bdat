@@ -21,7 +21,7 @@ internal sealed class MetadataReader
     private readonly List<string> _columnLabels = [];
     private readonly List<int> _columnDataOffsets = [];
     private readonly List<int> _columnDataLengths = [];
-    private readonly List<ColumnType> _columnDataTypes = [];
+    private readonly List<StorageType> _columnDataTypes = [];
 
     public MetadataReader(Stream stream, SasFileMetadata metadata)
     {
@@ -188,7 +188,7 @@ internal sealed class MetadataReader
 
                             _columnDataOffsets.Add(columnDataOffset);
                             _columnDataLengths.Add(columnDataLength);
-                            _columnDataTypes.Add(columnDataType == 1 ? ColumnType.Number : ColumnType.String);
+                            _columnDataTypes.Add(columnDataType == 1 ? StorageType.Number: StorageType.String);
                         }
                     }
                     break;
@@ -237,14 +237,14 @@ internal sealed class MetadataReader
     {
         var columns = new List<SasColumnInfo>(_metadata.ColumnCount);
 
-        for (int i = 0; i < _metadata.ColumnCount; i++)
+        for (var i = 0; i < _metadata.ColumnCount; i++)
         {
             var name = i < _columnNames.Count ? _columnNames[i] : $"Column{i + 1}";
             var label = i < _columnLabels.Count ? _columnLabels[i] : string.Empty;
             var format = i < _columnFormats.Count ? _columnFormats[i] : string.Empty;
             var offset = i < _columnDataOffsets.Count ? _columnDataOffsets[i] : 0;
             var length = i < _columnDataLengths.Count ? _columnDataLengths[i] : 0;
-            var baseType = i < _columnDataTypes.Count ? _columnDataTypes[i] : ColumnType.Unknown;
+            var baseType = i < _columnDataTypes.Count ? _columnDataTypes[i] : StorageType.Unknown;
 
             var type = FieldSerializers.InferKind(baseType, format, length);
             var converter = FieldSerializers.GetSerializer(type, format, _endian, _encoding);
