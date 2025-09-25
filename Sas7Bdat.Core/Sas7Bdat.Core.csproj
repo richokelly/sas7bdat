@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
 
     <PackageId>Sas7Bdat</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Richard O'Kelly</Authors>
     <Company>Your Company</Company>
     <Description>High-performance, low-allocation SAS7BDAT file reader for .NETfile </Description>
