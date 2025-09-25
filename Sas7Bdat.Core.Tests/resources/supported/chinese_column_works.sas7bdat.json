@@ -1,0 +1,36 @@
+{
+  "Metadata": {
+    "Endianness": 1,
+    "Format": 1,
+    "Platform": 2,
+    "Encoding": "GB18030",
+    "DatasetName": "CHINESE_COLUMN_WORKS",
+    "FileType": "DATA",
+    "DateCreated": "2016-10-17T11:33:37Z",
+    "DateModified": "2016-10-17T11:33:37Z",
+    "HeaderLength": 65536,
+    "PageLength": 65536,
+    "PageCount": 1,
+    "SasRelease": "9.0401M3",
+    "SasServerType": "X64_7PRO",
+    "OsType": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+    "OsName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+    "Compression": 0,
+    "Creator": "",
+    "CreatorProc": "DATASTEP",
+    "RowCount": 1,
+    "ColumnCount": 1,
+    "RowLength": 8,
+    "ColCountP1": 1,
+    "ColCountP2": 0,
+    "MixPageRowCount": 7933,
+    "Lcs": 0,
+    "Lcp": 8,
+    "Decompressor": {}
+  },
+  "Data": [
+    [
+      123
+    ]
+  ]
+}

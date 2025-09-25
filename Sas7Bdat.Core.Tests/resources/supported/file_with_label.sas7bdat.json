@@ -1,0 +1,41 @@
+{
+  "Metadata": {
+    "Endianness": 1,
+    "Format": 1,
+    "Platform": 2,
+    "Encoding": "WINDOWS-1252",
+    "DatasetName": "A",
+    "FileType": "DATA",
+    "DateCreated": "2019-02-22T07:04:03Z",
+    "DateModified": "2019-02-22T07:04:03Z",
+    "HeaderLength": 65536,
+    "PageLength": 65536,
+    "PageCount": 1,
+    "SasRelease": "9.0401M3",
+    "SasServerType": "X64_7PRO",
+    "OsType": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+    "OsName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+    "Compression": 0,
+    "Creator": "",
+    "CreatorProc": "DATASTEP",
+    "RowCount": 2,
+    "ColumnCount": 2,
+    "RowLength": 16,
+    "ColCountP1": 2,
+    "ColCountP2": 0,
+    "MixPageRowCount": 3988,
+    "Lcs": 0,
+    "Lcp": 8,
+    "Decompressor": {}
+  },
+  "Data": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ]
+}

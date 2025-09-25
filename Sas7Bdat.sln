@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.36129.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sas7Bdat.Core", "Sas7Bdat.Core\Sas7Bdat.Core.csproj", "{CABA0ADD-C118-42F3-BA63-3AA3948E4FFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sas7Bdat.Core.Tests", "Sas7Bdat.Core.Tests\Sas7Bdat.Core.Tests.csproj", "{86F9FADC-AA54-494F-B8C8-EE994A7791E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CABA0ADD-C118-42F3-BA63-3AA3948E4FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CABA0ADD-C118-42F3-BA63-3AA3948E4FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CABA0ADD-C118-42F3-BA63-3AA3948E4FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CABA0ADD-C118-42F3-BA63-3AA3948E4FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F9FADC-AA54-494F-B8C8-EE994A7791E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F9FADC-AA54-494F-B8C8-EE994A7791E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F9FADC-AA54-494F-B8C8-EE994A7791E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F9FADC-AA54-494F-B8C8-EE994A7791E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F074B912-3913-49B2-BA1A-F0C2E22CAD45}
+	EndGlobalSection
+EndGlobal

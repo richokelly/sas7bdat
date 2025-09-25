@@ -1,0 +1,36 @@
+{
+  "Metadata": {
+    "Endianness": 1,
+    "Format": 2,
+    "Platform": 1,
+    "Encoding": "ISO-8859-1",
+    "DatasetName": "DATE_FORMAT_QTRR",
+    "FileType": "DATA",
+    "DateCreated": "2021-02-08T20:51:48Z",
+    "DateModified": "2021-02-08T20:51:48Z",
+    "HeaderLength": 2048,
+    "PageLength": 2048,
+    "PageCount": 1,
+    "SasRelease": "9.0401M5",
+    "SasServerType": "Linux",
+    "OsType": "3.10.0-1160.11.1",
+    "OsName": "x86_64",
+    "Compression": 0,
+    "Creator": "",
+    "CreatorProc": "DATASTEP",
+    "RowCount": 1,
+    "ColumnCount": 1,
+    "RowLength": 8,
+    "ColCountP1": 1,
+    "ColCountP2": 0,
+    "MixPageRowCount": 21,
+    "Lcs": 0,
+    "Lcp": 8,
+    "Decompressor": {}
+  },
+  "Data": [
+    [
+      "2019-10-25T00:00:00Z"
+    ]
+  ]
+}

@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <PackageId>Sas7Bdat</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Richard O'Kelly</Authors>
+    <Company>Your Company</Company>
+    <Description>High-performance, low-allocation SAS7BDAT file reader for .NETfile </Description>
+    <PackageTags>sas;sas7bdat;data;reader;performance;memory-efficient</PackageTags>
+    <PackageProjectUrl>https://github.com/richokelly/Sas7Bdat</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/richokelly/Sas7Bdat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+
+    <!-- Generate XML documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+
+    <!-- Source Link support -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="readme.md" Pack="true" PackagePath="\" Condition="Exists('readme.md')" />
+    <None Include="icon.png" Pack="true" PackagePath="\" Condition="Exists('icon.png')" />
+  </ItemGroup>
+
+  <!-- Release notes -->
+  <PropertyGroup>
+    <PackageReleaseNotes>
+      Initial release featuring:
+      - High-performance SAS7BDAT file reading with minimal memory allocation
+      - Support for extended observation counter format (SAS 9.3+)
+      - Async enumeration with cancellation support
+      - Memory-efficient streaming using Span&lt;T&gt; and Memory&lt;T&gt;
+      - Automatic decompression (RLE and RDC)
+      - Comprehensive encoding support
+    </PackageReleaseNotes>
+  </PropertyGroup>
+</Project>

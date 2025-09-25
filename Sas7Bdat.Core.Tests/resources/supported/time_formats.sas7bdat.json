@@ -1,0 +1,42 @@
+{
+  "Metadata": {
+    "Endianness": 1,
+    "Format": 2,
+    "Platform": 1,
+    "Encoding": "UTF-8",
+    "DatasetName": "TIME_FORMATS",
+    "FileType": "DATA",
+    "DateCreated": "2019-07-19T06:35:30Z",
+    "DateModified": "2019-07-19T06:35:30Z",
+    "HeaderLength": 65536,
+    "PageLength": 65536,
+    "PageCount": 1,
+    "SasRelease": "9.0401M6",
+    "SasServerType": "Linux",
+    "OsType": "2.6.32-754.6.3.e",
+    "OsName": "x86_64",
+    "Compression": 0,
+    "Creator": "",
+    "CreatorProc": "DATASTEP",
+    "RowCount": 1,
+    "ColumnCount": 7,
+    "RowLength": 56,
+    "ColCountP1": 7,
+    "ColCountP2": 0,
+    "MixPageRowCount": 1119,
+    "Lcs": 0,
+    "Lcp": 8,
+    "Decompressor": {}
+  },
+  "Data": [
+    [
+      "10:10:10",
+      "10:10:10",
+      "10:10:10",
+      "10:10:10",
+      "10:10:10",
+      "10:10:10",
+      "10:10:10"
+    ]
+  ]
+}
