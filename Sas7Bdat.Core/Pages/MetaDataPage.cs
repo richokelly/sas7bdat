@@ -13,6 +13,7 @@ internal sealed class MetaDataPage(ReadOnlyMemory<byte> pageBuffer, SasFileMetad
     {
         var subheaderSize = 3 * IntegerSize;
 
+        using var buffer = new PooledMemory<byte>(Metadata.RowLength);
         for (var i = 0; i < Header.SubheaderCount; i++)
         {
             var offset = PageBitOffset + 8 + i * subheaderSize;
@@ -29,21 +30,25 @@ internal sealed class MetaDataPage(ReadOnlyMemory<byte> pageBuffer, SasFileMetad
                   (subheader.Compression == HeaderConstants.CompressedSubheaderId || subheader.Compression == 0) &&
                   subheader.Type == HeaderConstants.CompressedSubheaderType)) continue;
 
-            var rawData = PageBuffer.Slice(subheader.Offset, subheader.Length);
-            var decompressed = Metadata.Compression == Compression.None || subheader.Length >= Metadata.RowLength
-                ? rawData
-                : Decompressor.Decompress(rawData, Metadata.RowLength);
-
-            yield return decompressed;
+            if ((Metadata.Compression == Compression.None || subheader.Length >= Metadata.RowLength))
+            {
+                yield return PageBuffer.Slice(subheader.Offset, subheader.Length);
+            }
+            else
+            {
+                Decompressor.Decompress(PageBuffer.Span.Slice(subheader.Offset, subheader.Length), buffer.Span);
+                yield return buffer.Memory;
+            }
         }
     }
 
     private PageSubheader ReadSubheaderAt(int location)
     {
-        var offset = (int)Metadata.Endianness.ReadIntegerBySizeAt(PageBuffer.Span, location, IntegerSize);
-        var length = (int)Metadata.Endianness.ReadIntegerBySizeAt(PageBuffer.Span, location + IntegerSize, IntegerSize);
-        var compression = Metadata.Endianness.ReadByteAt(PageBuffer.Span, location + IntegerSize * 2);
-        var type = Metadata.Endianness.ReadByteAt(PageBuffer.Span, location + IntegerSize * 2 + 1);
+        var endian = Metadata.Endianness;
+        var offset = (int)endian.ReadIntegerBySizeAt(PageBuffer.Span, location, IntegerSize);
+        var length = (int)endian.ReadIntegerBySizeAt(PageBuffer.Span, location + IntegerSize, IntegerSize);
+        var compression = endian.ReadByteAt(PageBuffer.Span, location + IntegerSize * 2);
+        var type = endian.ReadByteAt(PageBuffer.Span, location + IntegerSize * 2 + 1);
 
         return new PageSubheader(offset, length, compression, type);
     }

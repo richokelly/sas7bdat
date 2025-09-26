@@ -2,5 +2,5 @@
 
 public interface IDecompressor
 {
-    ReadOnlyMemory<byte> Decompress(ReadOnlyMemory<byte> compressed, int expectedLength);
+    void Decompress(ReadOnlySpan<byte> compressed, Span<byte> destination);
 }

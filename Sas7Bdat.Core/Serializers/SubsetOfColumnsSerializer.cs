@@ -2,14 +2,14 @@
 
 internal class SubsetOfColumnsSerializer(ReadOnlyMemory<SasColumnInfo> columns, HashSet<int> columnIndices) : ColumnSerializer(columns)
 {
-    public override void Deserialize(ReadOnlyMemory<byte> rowData, Span<object?> destination)
+    public override void Deserialize(ReadOnlySpan<byte> rowData, Span<object?> destination)
     {
-        var i = 0;
         var valueIndex = 0;
-        foreach (var column in _columns.Span)
+        var span = Columns.Span;
+        for (var i = 0; i < span.Length; i++)
         {
-            if (!columnIndices.Contains(i++)) continue;
-            destination[valueIndex++] = ExtractValue(rowData, column);
+            if (!columnIndices.Contains(i)) continue;
+            destination[valueIndex++] = ExtractValue(rowData, span[i]);
         }
     }
 }

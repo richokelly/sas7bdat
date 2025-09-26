@@ -180,26 +180,24 @@ internal static class FieldSerializers
         protected double? ExtractDouble(ReadOnlySpan<byte> data)
         {
             var length = data.Length;
-            switch (length)
+            if (length == 8)
             {
-                case 1:
-                    return data[0];
-                case 2:
-                    return ReadInt16(data);
-                case < 8:
-                    {
-                        var result = ReadIncompleteDouble(data, length);
-                        return double.IsNaN(result) ? null : result;
-                    }
-                case 8:
-                    {
-                        var value = ReadInt64(data);
-                        var result = BitConverter.Int64BitsToDouble(value);
-                        return double.IsNaN(result) ? null : result;
-                    }
-                default:
-                    return null;
+                var value = ReadInt64(data);
+                var result = BitConverter.Int64BitsToDouble(value);
+                return double.IsNaN(result) ? null : result;
             }
+
+            if (length == 1) return data[0];
+
+            if (length == 2) return ReadInt16(data);
+
+            if (length < 8)
+            {
+                var result = ReadIncompleteDouble(data, length);
+                return double.IsNaN(result) ? null : result;
+            }
+
+            return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -251,28 +249,19 @@ internal static class FieldSerializers
     {
         public object? Deserialize(ReadOnlySpan<byte> data)
         {
-            var endIndex = data.Length;
-            for (var i = data.Length - 1; i >= 0; i--)
-            {
-                if (data[i] == 0 || data[i] == 32) continue;
-                endIndex = i + 1;
-                break;
-            }
-
-            if (endIndex == 0)
+            var start = 0;
+            var end = data.Length;
+        
+            while (end > 0 && (data[end - 1] == 0 || data[end - 1] == 32))
+                end--;
+                
+            if (end == 0)
                 return string.Empty;
-
-            var startIndex = 0;
-            for (var i = 0; i < endIndex; i++)
-            {
-                if (data[i] == 32) continue;
-                startIndex = i;
-                break;
-            }
-
-            return startIndex >= endIndex
-                ? string.Empty
-                : encoding.GetString(data[startIndex.. (endIndex - startIndex)]).Trim();
+                
+            while (start < end && data[start] == 32)
+                start++;
+                
+            return start >= end ? string.Empty : encoding.GetString(data[start..(end - start)]);
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using Sas7Bdat.Core.Metadata;
-using Sas7Bdat.Core.Pages;
 using Sas7Bdat.Core.Serializers;
 
 namespace Sas7Bdat.Core.Headers;
@@ -10,14 +9,14 @@ internal sealed class HeaderReader(string filePath)
     private int _align2;
     private int _totalAlign;
 
-    public async Task<(SasFileMetadata metadata, ReadOnlyMemory<SasColumnInfo> columns)> ReadMetadataAsync(CancellationToken ct = default)
+    public async Task<(SasFileMetadata metadata, SasColumnInfo[] columns)> ReadMetadataAsync(CancellationToken ct = default)
     {
         await using var stream = new FileStream(
             filePath,
             FileMode.Open,
             FileAccess.Read,
             FileShare.Read,
-            bufferSize: 4096,
+            bufferSize: 8*Environment.SystemPageSize,
             useAsync: true);
 
         using var initialBuffer = new PooledMemory<byte>(SasConstants.HeaderSize);

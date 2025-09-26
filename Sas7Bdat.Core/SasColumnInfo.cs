@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Sas7Bdat.Core.Serializers;
+﻿using Sas7Bdat.Core.Serializers;
 
 namespace Sas7Bdat.Core;
 

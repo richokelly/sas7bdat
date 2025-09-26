@@ -3,6 +3,21 @@ using System.Text;
 
 namespace Sas7Bdat.Core;
 
+internal static class MoreMath
+{
+    public static int Max(Span<int> values)
+    {
+        if (values.IsEmpty) throw new ArgumentException($"{nameof(values)} cannot be empty");
+        var max = int.MinValue;
+        foreach (var value in values)
+        {
+            if (value > max) max = value;
+        }
+
+        return max;
+    }
+}
+
 internal static class EndianExtensions
 {
     public static ushort ReadUInt16At(this Endian endian, ReadOnlySpan<byte> bytes, int offset)

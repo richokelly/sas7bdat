@@ -11,9 +11,9 @@ public sealed class SasDataReader : IAsyncDisposable
     private readonly FileStream _fileLock;
 
     public SasFileMetadata Metadata { get; }
-    public ReadOnlyMemory<SasColumnInfo> Columns { get; }
+    public SasColumnInfo[] Columns { get; }
 
-    private SasDataReader(string filePath, SasFileMetadata metadata, ReadOnlyMemory<SasColumnInfo> columns)
+    private SasDataReader(string filePath, SasFileMetadata metadata, SasColumnInfo[] columns)
     {
         _filePath = filePath;
         Metadata = metadata;
@@ -35,6 +35,8 @@ public sealed class SasDataReader : IAsyncDisposable
 
     public async IAsyncEnumerable<ReadOnlyMemory<object?>> ReadRowsAsync(RecordReadOptions? options = null, [EnumeratorCancellation] CancellationToken ct = default)
     {
+        ct.ThrowIfCancellationRequested();
+
         options ??= new RecordReadOptions();
 
         var selectAll = options.ShouldSelectAllColumns();
@@ -49,12 +51,13 @@ public sealed class SasDataReader : IAsyncDisposable
             FileMode.Open,
             FileAccess.Read,
             FileShare.Read,
-            bufferSize: Math.Max(Metadata.PageLength, 4096),
+            bufferSize: MoreMath.Max([2*Metadata.PageLength, 8*Environment.SystemPageSize]),
             useAsync: true);
 
         stream.Position = Metadata.HeaderLength;
 
-        using var buffer = new PooledMemory<byte>(Metadata.PageLength);
+        using var buffer1 = new PooledMemory<byte>(Metadata.PageLength);
+        using var buffer2 = new PooledMemory<byte>(Metadata.PageLength);
         using var values = new PooledMemory<object?>(length);
 
         var decompressor = Metadata.Decompressor;
@@ -63,13 +66,17 @@ public sealed class SasDataReader : IAsyncDisposable
         var rowsToSkip = options.SkipRows ?? 0;
         var maxRows = options.MaxRows ?? long.MaxValue;
 
+        var buffers = (Current: buffer1, Next : buffer2);
+        var readTask = stream.ReadAsync(buffers.Current.Memory, ct);
         while (true)
         {
-            var bytesRead = await stream.ReadAsync(buffer.Memory, ct);
+            var bytesRead = await readTask;
             if (bytesRead < Metadata.PageLength)
                 break;
+            
+            readTask = stream.ReadAsync(buffers.Next.Memory, ct);
 
-            var page = SasPageFactory.CreatePage(buffer.Memory, Metadata, decompressor, totalRowsProcessed);
+            var page = SasPageFactory.CreatePage(buffers.Current.Memory, Metadata, decompressor, totalRowsProcessed);
             foreach (var row in page.EnumerateRows())
             {
                 if (totalRowsProcessed++ >= Metadata.RowCount)
@@ -81,12 +88,13 @@ public sealed class SasDataReader : IAsyncDisposable
                 if (rowsReturned++ >= maxRows)
                     yield break;
 
-                serializer.Deserialize(row, values.Span);
+                serializer.Deserialize(row.Span, values.Span);
                 yield return values.Memory[..length];
 
-                if (ct.IsCancellationRequested)
-                    yield break;
+                ct.ThrowIfCancellationRequested();
             }
+
+            buffers = (Current: buffers.Next, Next: buffers.Current);
 
             if (totalRowsProcessed >= Metadata.RowCount)
                 break;

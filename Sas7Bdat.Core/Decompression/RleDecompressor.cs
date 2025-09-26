@@ -6,15 +6,17 @@ internal sealed class RleDecompressor : IDecompressor
     private const byte CharSpace = 0x20;
     private const byte CharAt = 0x40;
 
-    public ReadOnlyMemory<byte> Decompress(ReadOnlyMemory<byte> compressed, int expectedLength)
+    public void Decompress(ReadOnlySpan<byte> compressed, Span<byte> destination)
     {
-        var output = new byte[expectedLength];
+        var output = destination;
         var outputPos = 0;
         var inputPos = 0;
+        var span = compressed;
+        var expectedLength = destination.Length;
 
-        while (inputPos < compressed.Length - 1 && outputPos < expectedLength)
+        while (inputPos < compressed.Length - 1 && outputPos < destination.Length)
         {
-            var val = compressed.Span[inputPos++];
+            var val = span[inputPos++];
             var command = (byte)(val >> 4);
             var endOfFirstByte = (byte)(val & 0x0F);
 
@@ -26,17 +28,17 @@ internal sealed class RleDecompressor : IDecompressor
                 case 0x3:
                     if (inputPos < compressed.Length)
                     {
-                        var n = (endOfFirstByte << 8) + compressed.Span[inputPos++] + 64;
+                        var n = (endOfFirstByte << 8) + span[inputPos++] + 64;
                         var length = n;
                         var availableInput = compressed.Length - inputPos;
                         length = Math.Min(length, availableInput); 
 
-                        var availableOutput = expectedLength - outputPos;
+                        var availableOutput = destination.Length - outputPos;
                         length = Math.Min(length, availableOutput);
 
                         if (length > 0)
                         {
-                            compressed.Slice(inputPos, length).CopyTo(output.AsMemory(outputPos, length));
+                            compressed.Slice(inputPos, length).CopyTo(output.Slice(outputPos, length));
                             inputPos += length;
                             outputPos += length;
                         }
@@ -46,15 +48,15 @@ internal sealed class RleDecompressor : IDecompressor
                 case 0x4: // SAS_RLE_COMMAND_INSERT_BYTE18
                     if (inputPos + 1 < compressed.Length)
                     {
-                        var n = (endOfFirstByte << 4) + compressed.Span[inputPos++] + 18;
-                        var fillByte = compressed.Span[inputPos++];
+                        var n = (endOfFirstByte << 4) + span[inputPos++] + 18;
+                        var fillByte = span[inputPos++];
                         var length = n;
                         var availableOutput = expectedLength - outputPos;
                         length = Math.Min(length, availableOutput);
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(fillByte);
+                            output.Slice(outputPos, length).Fill(fillByte);
                             outputPos += length;
                         }
                     }
@@ -63,14 +65,14 @@ internal sealed class RleDecompressor : IDecompressor
                 case 0x5: // SAS_RLE_COMMAND_INSERT_AT17
                     if (inputPos < compressed.Length)
                     {
-                        var n = (endOfFirstByte << 8) + compressed.Span[inputPos++] + 17;
+                        var n = (endOfFirstByte << 8) + span[inputPos++] + 17;
                         var length = n;
                         var availableOutput = expectedLength - outputPos;
                         length = Math.Min(length, availableOutput);
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(CharAt);
+                            output.Slice(outputPos, length).Fill(CharAt);
                             outputPos += length;
                         }
                     }
@@ -79,14 +81,14 @@ internal sealed class RleDecompressor : IDecompressor
                 case 0x6: // SAS_RLE_COMMAND_INSERT_BLANK17
                     if (inputPos < compressed.Length)
                     {
-                        var n = (endOfFirstByte << 8) + compressed.Span[inputPos++] + 17;
+                        var n = (endOfFirstByte << 8) + span[inputPos++] + 17;
                         var length = n;
                         var availableOutput = expectedLength - outputPos;
                         length = Math.Min(length, availableOutput);
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(CharSpace);
+                            output.Slice(outputPos, length).Fill(CharSpace);
                             outputPos += length;
                         }
                     }
@@ -95,14 +97,14 @@ internal sealed class RleDecompressor : IDecompressor
                 case 0x7: // SAS_RLE_COMMAND_INSERT_ZERO17
                     if (inputPos < compressed.Length)
                     {
-                        var n = (endOfFirstByte << 8) + compressed.Span[inputPos++] + 17;
+                        var n = (endOfFirstByte << 8) + span[inputPos++] + 17;
                         var length = n;
                         var availableOutput = expectedLength - outputPos;
                         length = Math.Min(length, availableOutput);
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(CharNull);
+                            output.Slice(outputPos, length).Clear();
                             outputPos += length;
                         }
                     }
@@ -120,7 +122,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            compressed.Slice(inputPos, length).CopyTo(output.AsMemory(outputPos, length));
+                            compressed.Slice(inputPos, length).CopyTo(output.Slice(outputPos, length));
                             inputPos += length;
                             outputPos += length;
                         }
@@ -139,7 +141,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            compressed.Slice(inputPos, length).CopyTo(output.AsMemory(outputPos, length));
+                            compressed.Slice(inputPos, length).CopyTo(output.Slice(outputPos, length));
                             inputPos += length;
                             outputPos += length;
                         }
@@ -158,7 +160,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            compressed.Slice(inputPos, length).CopyTo(output.AsMemory(outputPos, length));
+                            compressed.Slice(inputPos, length).CopyTo(output.Slice(outputPos, length));
                             inputPos += length;
                             outputPos += length;
                         }
@@ -177,7 +179,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            compressed.Slice(inputPos, length).CopyTo(output.AsMemory(outputPos, length));
+                            compressed.Slice(inputPos, length).CopyTo(output.Slice(outputPos, length));
                             inputPos += length;
                             outputPos += length;
                         }
@@ -187,7 +189,7 @@ internal sealed class RleDecompressor : IDecompressor
                 case 0xC: // SAS_RLE_COMMAND_INSERT_BYTE3
                     if (inputPos < compressed.Length)
                     {
-                        var fillByte = compressed.Span[inputPos++];
+                        var fillByte = span[inputPos++];
                         var n = endOfFirstByte + 3;
                         var length = n;
                         var availableOutput = expectedLength - outputPos;
@@ -195,7 +197,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(fillByte);
+                            output.Slice(outputPos, length).Fill(fillByte);
                             outputPos += length;
                         }
                     }
@@ -210,7 +212,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(CharAt);
+                            output.Slice(outputPos, length).Fill(CharAt);
                             outputPos += length;
                         }
                     }
@@ -225,7 +227,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(CharSpace);
+                            output.Slice(outputPos, length).Fill(CharSpace);
                             outputPos += length;
                         }
                     }
@@ -240,7 +242,7 @@ internal sealed class RleDecompressor : IDecompressor
 
                         if (length > 0)
                         {
-                            output.AsSpan(outputPos, length).Fill(CharNull);
+                            output.Slice(outputPos, length).Clear();
                             outputPos += length;
                         }
                     }
@@ -255,7 +257,5 @@ internal sealed class RleDecompressor : IDecompressor
         {
             output[outputPos++] = CharNull;
         }
-
-        return output;
     }
 }

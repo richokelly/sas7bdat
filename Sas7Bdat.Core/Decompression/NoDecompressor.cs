@@ -2,8 +2,8 @@
 
 public sealed class NoDecompressor : IDecompressor
 {
-    public ReadOnlyMemory<byte> Decompress(ReadOnlyMemory<byte> compressed, int expectedLength)
+    public void Decompress(ReadOnlySpan<byte> compressed, Span<byte> destination)
     {
-        return compressed;
+        compressed.CopyTo(destination);
     }
 }
