@@ -101,7 +101,7 @@ await foreach (var row in reader.ReadRowsAsync())
 var storedData = new List<object[]>();
 await foreach (var row in reader.ReadRowsAsync())
 {
-    storedData.Add(row.ToArray()); // Safe to store as call to ToArray() creates a new array for the data
+    storedData.Add(row.ToArray()); // Safe to store as the call to ToArray() creates a new array for the data
 
     // Or, can be done manually
     var copy = new object[row.Length];
@@ -195,7 +195,7 @@ Console.WriteLine($"Columns: {reader.Metadata.ColumnCount}");
 Console.WriteLine($"Created: {reader.Metadata.DateCreated}");
 Console.WriteLine($"Encoding: {reader.Metadata.Encoding}");
 
-foreach (var column in reader.Metadata.Columns)
+foreach (var column in reader.Columns)
 {
     Console.WriteLine($"Column: {column.Name} ({column.Type}) - {column.Label}");
 }
@@ -244,6 +244,7 @@ MIT License - see LICENSE file for details.
 
 ## Acknowledgments
 
-- Based on reverse engineering work from the R `sas7bdat` package
+- Based on reverse engineering work from the R `sas7bdat` package and the cpp-sas7bdat github repo by Olivia Quinet
 - SAS7BDAT format documentation by Matthew S. Shotwell
 - Performance optimizations inspired by modern .NET practices
+- Test sas7bdat data files sourced from the 'SasReader.NET' package
