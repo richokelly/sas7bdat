@@ -54,7 +54,6 @@ await foreach (var row in reader.ReadRowsAsync())
                 Console.WriteLine($"{column.Name}: {time}");
                 break;
             case ColumnType.Number:
-            case ColumnType.Integer:
                 Console.WriteLine($"{column.Name}: {value}");
                 break;
         }
@@ -143,10 +142,9 @@ await foreach (var row in reader.ReadRowsAsync(options))
 
 ### Custom Transformation
 ```csharp
-await foreach (var thing in reader.ReadRecordsAsync(TransformToThing))
+await foreach (var trip in reader.ReadRecordsAsync(TransformToTrip))
 {
-    var rhyme = $@"Destination: {trip.Destination}; depart {trip.Departure:dd MMM, HH:mm} at {trip.Speed:F1}—setting the pace; For {trip.Duration:h\:mm}, we travel to plan with clarity, control, and grace.";
-    Console.WriteLine(rhyme);
+    Console.WriteLine($"Trip to {trip.Destination} on {trip.When:yyyy-MM-dd}");
 }
 
 static Trip TransformToTrip(ReadOnlyMemory<object?> row)
@@ -244,7 +242,11 @@ MIT License - see LICENSE file for details.
 
 ## Acknowledgments
 
-- Based on reverse engineering work from the R `sas7bdat` package and the cpp-sas7bdat github repo by Olivia Quinet
-- SAS7BDAT format documentation by Matthew S. Shotwell
-- Performance optimizations inspired by modern .NET practices
-- Test sas7bdat data files sourced from the 'SasReader.NET' package
+- SAS7BDAT format documentation by [Matthew S. Shotwell](https://github.com/BioStatMatt/sas7bdat/blob/master/inst/doc/sas7bdat.pdf)
+- Additional format insights from the Python [`sas7bdat` library](https://github.com/jared-hwang/sas7bdat) by Jared Hwang
+- The original [ReadStat C library](https://github.com/WizardMac/ReadStat) which includes comprehensive SAS format support
+- Based on reverse engineering work from the R [`sas7bdat` package](https://cran.r-project.org/package=sas7bdat) by Matt Shotwell
+- The [Pandas SAS reader](https://github.com/pandas-dev/pandas/blob/main/pandas/io/sas/sas7bdat.py) implementation
+- Test data files from the [SasReader.NET repository](https://github.com/pseudomo/SasReader.NET) by pseudomo
+- C++ implementation insights from [cpp-sas7bdat](https://github.com/olivia76/cpp-sas7bdat) by Olivia Quinet
+- Performance optimizations inspired by modern .NET practices and the [.NET Performance Guidelines](https://docs.microsoft.com/en-us/dotnet/framework/performance/)
