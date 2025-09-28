@@ -45,7 +45,7 @@
   <PropertyGroup>
     <PackageReleaseNotes>
       Initial release featuring:
-      - High-performance SAS7BDAT file reading with minimal memory allocation
+      - High-performance, incredibly fast SAS7BDAT file reading with minimal memory allocation
       - Support for extended observation counter format (SAS 9.3+)
       - Async enumeration with cancellation support
       - Memory-efficient streaming using Span&lt;T&gt; and Memory&lt;T&gt;
