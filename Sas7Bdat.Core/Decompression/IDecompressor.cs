@@ -37,12 +37,9 @@ public interface IDecompressor
     /// <item><description>Corrupted or invalid compressed data should result in an exception</description></item>
     /// </list>
     /// </remarks>
-    /// <exception cref="InvalidOperationException">
+    /// <exception cref="InvalidDataException">
     /// Thrown when the compressed data is corrupted, contains invalid command sequences,
     /// or cannot be decompressed due to format errors.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the destination buffer is too small to hold the decompressed data.
     /// </exception>
     /// <example>
     /// <code>

@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
 
     <PackageId>Sas7Bdat</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>Richard O'Kelly</Authors>
     <Company>Your Company</Company>
     <Description>High-performance, low-allocation SAS7BDAT file reader for .NETfile </Description>
@@ -44,7 +44,7 @@
   <!-- Release notes -->
   <PropertyGroup>
     <PackageReleaseNotes>
-      Initial release featuring:
+      Version 2 release featuring:
       - High-performance, incredibly fast SAS7BDAT file reading with minimal memory allocation
       - Support for extended observation counter format (SAS 9.3+)
       - Async enumeration with cancellation support

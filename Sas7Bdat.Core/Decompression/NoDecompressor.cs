@@ -49,7 +49,7 @@ public class NoDecompressor : IDecompressor
     /// <item><description>Minimal CPU overhead</description></item>
     /// </list>
     /// </remarks>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="InvalidDataException">
     /// Thrown when the destination buffer is smaller than the source data.
     /// </exception>
     /// <example>
@@ -64,6 +64,7 @@ public class NoDecompressor : IDecompressor
     /// </example>
     public void Decompress(ReadOnlySpan<byte> compressed, Span<byte> destination)
     {
+        if (destination.Length < compressed.Length) throw new InvalidDataException("Destination buffer is smaller than the source data");
         compressed.CopyTo(destination);
     }
 }

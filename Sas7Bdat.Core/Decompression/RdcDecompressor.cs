@@ -37,11 +37,6 @@ namespace Sas7Bdat.Core.Decompression;
 public class RdcDecompressor : IDecompressor
 {
     /// <summary>
-    /// The null character (0x00) used for padding unwritten portions of the output buffer.
-    /// </summary>
-    private const byte CharNull = 0x00;
-
-    /// <summary>
     /// Decompresses RDC-compressed data into the specified destination buffer.
     /// </summary>
     /// <param name="compressed">The RDC-compressed data to decompress.</param>
@@ -67,7 +62,7 @@ public class RdcDecompressor : IDecompressor
     /// <item><description>Efficient span-based operations for memory manipulation</description></item>
     /// </list>
     /// </remarks>
-    /// <exception cref="InvalidOperationException">
+    /// <exception cref="InvalidDataException">
     /// Thrown when:
     /// <list type="bullet">
     /// <item><description>An unknown RDC command marker is encountered</description></item>
@@ -84,7 +79,7 @@ public class RdcDecompressor : IDecompressor
     ///     rdcDecompressor.Decompress(compressedPageData, decompressedBuffer);
     ///     Console.WriteLine("RDC decompression completed successfully");
     /// }
-    /// catch (InvalidOperationException ex)
+    /// catch (InvalidDataException ex)
     /// {
     ///     Console.WriteLine($"RDC decompression failed: {ex.Message}");
     /// }
@@ -158,15 +153,12 @@ public class RdcDecompressor : IDecompressor
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Unknown RDC marker {val:X2} at offset {inputPos - 1}");
+                    throw new InvalidDataException($"Unknown RDC marker {val:X2} at offset {inputPos - 1}");
                 }
             }
         }
 
-        while (outputPos < destination.Length)
-        {
-            output[outputPos++] = CharNull;
-        }
+        output[outputPos..].Clear();
     }
 
     /// <summary>
@@ -194,6 +186,7 @@ public class RdcDecompressor : IDecompressor
     /// // position is now 15, buffer[10..14] contains 0xFF
     /// </code>
     /// </example>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void FillBytes(Span<byte> dest, ref int destPos, byte value, int count)
     {
         var actualCount = Math.Min(count, dest.Length - destPos);
@@ -228,7 +221,7 @@ public class RdcDecompressor : IDecompressor
     /// The method is marked with AggressiveInlining for optimal performance in the tight
     /// decompression loop.
     /// </remarks>
-    /// <exception cref="InvalidOperationException">
+    /// <exception cref="InvalidDataException">
     /// Thrown when the offset is greater than the current position, indicating corrupted
     /// compressed data or an invalid back-reference.
     /// </exception>
@@ -248,16 +241,24 @@ public class RdcDecompressor : IDecompressor
     private static void CopyPattern(Span<byte> buffer, int currentPos, int offset, int count, ref int outputPos)
     {
         if (offset > currentPos)
-        {
-            throw new InvalidOperationException($"Invalid RDC pattern offset: {offset} > {currentPos}");
-        }
+            throw new InvalidDataException($"Invalid RDC pattern offset: {offset} > {currentPos}");
 
         var sourcePos = currentPos - offset;
         var actualCount = Math.Min(count, buffer.Length - outputPos);
 
-        for (var i = 0; i < actualCount; i++)
+        if (offset >= actualCount)
         {
-            buffer[outputPos++] = buffer[sourcePos + i % offset];
+            // Non-overlapping: can use efficient bulk copy
+            buffer.Slice(sourcePos, actualCount).CopyTo(buffer.Slice(outputPos, actualCount));
+            outputPos += actualCount;
+        }
+        else
+        {
+            // Overlapping: must copy byte-by-byte
+            for (var i = 0; i < actualCount; i++)
+            {
+                buffer[outputPos++] = buffer[sourcePos + (i % offset)];
+            }
         }
     }
 }
